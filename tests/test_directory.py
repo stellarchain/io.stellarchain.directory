@@ -10,6 +10,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from build import build, collect
+from review_csv import has_source, summarize
 from strkey import address_type
 
 
@@ -59,7 +60,10 @@ class DirectoryTest(unittest.TestCase):
         bulk = (dist / "mainnet/directory.json").read_bytes()
         lookup = json.loads((dist / f"mainnet/addresses/{ACCOUNT}.json").read_bytes())
         mainnet = manifest["networks"]["mainnet"]
-        self.assertEqual(set(manifest), {"networks"})
+        self.assertEqual(manifest["schema"], "/schema.json")
+        schema = json.loads((dist / "schema.json").read_bytes())
+        self.assertEqual(schema["$id"], "https://directory.stellarchain.io/schema.json")
+        self.assertTrue({"manifest", "address", "asset", "addresses", "assets"} <= set(schema["$defs"]))
         self.assertEqual(mainnet["directory"], "/mainnet/directory.json")
         self.assertEqual(mainnet["lookup"], "/mainnet/addresses/{address}.json")
         self.assertEqual(mainnet["sha256"], hashlib.sha256(bulk).hexdigest())
@@ -85,6 +89,24 @@ class DirectoryTest(unittest.TestCase):
         self.put([row + ("unexpected field",)])
         with self.assertRaisesRegex(ValueError, "expected 6 columns"):
             collect(source)
+
+    def test_review_reports_csv_changes_and_requires_public_label_source(self):
+        source = self.put([
+            ("mainnet", ACCOUNT, "Original", "community", "unverified", ""),
+            ("mainnet", CONTRACT, "Old record", "community", "unverified", ""),
+        ])
+        before = collect(source)
+        self.put([
+            ("mainnet", ACCOUNT, "A | B", "community", "first_party", ""),
+            ("mainnet", "", "Stellar Lumen", "stellar", "first_party", "XLM"),
+        ])
+        summary, needs_source = summarize(before, collect(source))
+        self.assertIn("1 added, 1 removed, 1 label changes, 0 source changes, 1 verification changes", summary)
+        self.assertIn("A &#124; B", summary)
+        self.assertTrue(needs_source)
+        self.assertFalse(has_source("<!-- https://example.org/placeholder -->"))
+        self.assertFalse(has_source("https://localhost/"))
+        self.assertTrue(has_source("[Issuer listing](https://example.org/proof)"))
 
     def test_stellarchain_verification_is_for_mainnet_account_labels(self):
         source = self.put([

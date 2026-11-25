@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://directory.stellarchain.io/schema.json",
+  "title": "StellarChain Directory API",
+  "anyOf": [
+    { "$ref": "#/$defs/manifest" },
+    { "$ref": "#/$defs/address" },
+    { "$ref": "#/$defs/asset" },
+    { "$ref": "#/$defs/addresses" },
+    { "$ref": "#/$defs/assets" }
+  ],
+  "$defs": {
+    "network": { "enum": ["mainnet", "testnet", "futurenet"] },
+    "record": {
+      "type": "object",
+      "required": ["network", "type", "source", "verification"],
+      "properties": {
+        "network": { "$ref": "#/$defs/network" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "type": { "type": "string" },
+        "source": { "type": "string", "minLength": 1 },
+        "verification": { "type": "string", "minLength": 1 }
+      }
+    },
+    "address": {
+      "$ref": "#/$defs/record",
+      "required": ["address"],
+      "properties": {
+        "type": { "enum": ["account", "contract", "muxed_account", "muxed_contract"] },
+        "address": { "type": "string", "pattern": "^([GC][A-Z2-7]{55}|[MW][A-Z2-7]{68})$" }
+      }
+    },
+    "asset": {
+      "$ref": "#/$defs/record",
+      "required": ["id", "asset_code", "issuer"],
+      "properties": {
+        "type": { "const": "asset" },
+        "id": { "type": "string", "pattern": "^(native|[A-Za-z0-9]{1,12}-G[A-Z2-7]{55})$" },
+        "asset_code": { "type": "string", "pattern": "^[A-Za-z0-9]{1,12}$" },
+        "issuer": { "type": ["string", "null"], "pattern": "^G[A-Z2-7]{55}$" }
+      },
+      "if": { "properties": { "id": { "const": "native" } } },
+      "then": { "properties": { "asset_code": { "const": "XLM" }, "issuer": { "type": "null" } } },
+      "else": { "properties": { "issuer": { "type": "string" } } }
+    },
+    "addresses": { "type": "array", "items": { "$ref": "#/$defs/address" } },
+    "assets": { "type": "array", "items": { "$ref": "#/$defs/asset" } },
+    "collection": {
+      "type": "object",
+      "required": ["count", "directory", "lookup", "bytes", "sha256"],
+      "properties": {
+        "count": { "type": "integer", "minimum": 0 },
+        "directory": { "type": "string", "pattern": "^/" },
+        "lookup": { "type": "string", "pattern": "^/" },
+        "bytes": { "type": "integer", "minimum": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "manifest": {
+      "type": "object",
+      "required": ["networks", "schema"],
+      "properties": {
+        "schema": { "const": "/schema.json" },
+        "networks": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": { "$ref": "#/$defs/network" },
+          "additionalProperties": {
+            "$ref": "#/$defs/collection",
+            "properties": { "assets": { "$ref": "#/$defs/collection" } }
+          }
+        }
+      }
+    }
+  }
+}

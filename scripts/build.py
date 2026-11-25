@@ -23,6 +23,7 @@ MAX_ASSET_BYTES = 25 * 1024 * 1024
 HEADERS = """\
 /*
   Access-Control-Allow-Origin: *
+  Access-Control-Expose-Headers: ETag
   X-Content-Type-Options: nosniff
   ! Cache-Control
   Cache-Control: public, max-age=60, must-revalidate
@@ -130,13 +131,13 @@ def build(source, output_dir):
     for (network, folder, _), record in sorted(records.items()):
         networks[network][folder].append(record)
 
-    files = len(records) + sum(1 + bool(groups["assets"]) for groups in networks.values()) + 1
+    files = len(records) + sum(1 + bool(groups["assets"]) for groups in networks.values()) + 2
     if files > MAX_ASSETS:
         raise ValueError(f"{files:,} JSON files exceed the Cloudflare Free asset limit of {MAX_ASSETS:,}")
 
     with tempfile.TemporaryDirectory(prefix=".directory-", dir=output_dir.parent) as temp_dir:
         staging = Path(temp_dir) / "dist"
-        manifest = {"networks": {}}
+        manifest = {"networks": {}, "schema": "/schema.json"}
         for network, groups in networks.items():
             network_dir = staging / network
             summary = write_collection(network_dir, "addresses", "directory.json", "address", groups["addresses"])
@@ -145,6 +146,7 @@ def build(source, output_dir):
             manifest["networks"][network] = summary
 
         write_json(staging / "manifest.json", manifest)
+        write_json(staging / "schema.json", json.loads((ROOT / "schema.json").read_text(encoding="utf-8")))
         (staging / "_headers").write_text(HEADERS, encoding="utf-8")
         (staging / "_redirects").write_text("/ /manifest.json 302\n", encoding="utf-8")
         if output_dir.exists():
