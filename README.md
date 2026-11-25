@@ -29,6 +29,7 @@ Each record has a `source` and a `verification` value for its label. A missing r
 | `unverified` | No verification recorded |
 | `first_party` | The project publishes the exact address or asset in its official documentation |
 | `sep1_domain` | The account or issuer points to a domain whose `stellar.toml` lists the same account or exact asset |
+| `stellarchain_verified` | StellarChain's published v4 account list marks the exact mainnet address and label as verified |
 
 Verification describes the basis for the label. Contract build verification is defined separately by SEP-55. [SEP-1](https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md) · [SEP-55](https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0055.md)
 

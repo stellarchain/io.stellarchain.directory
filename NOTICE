@@ -10,6 +10,10 @@ The original 842 mainnet records were combined from these two public files:
 https://github.com/stellarchain/v4-api/blob/064ccd2e5c49d4b5188ecf3cd421256d5d72b7f6/resources/known_accounts.csv
 https://github.com/stellarchain/v4-api/blob/064ccd2e5c49d4b5188ecf3cd421256d5d72b7f6/resources/known_accounts_with_balance_and_transactions.csv
 
+Verification flags for matching mainnet account labels come from this public snapshot.
+
+https://github.com/stellarchain/v4-api/blob/b3fa2a85529b47d8f6765270724650f4ef6cb7d3/resources/known_accounts.csv
+
 Public Stellar ledger (stellar-ledger)
 -------------------------------------
 Address-only entries were confirmed against the public account endpoint.

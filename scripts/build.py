@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 NETWORKS = ("mainnet", "testnet", "futurenet")
 COLUMNS = ["network", "address", "label", "source", "verification", "asset_code"]
 SOURCES = {"circle", "community", "issuer", "stellar", "stellar-expert", "stellar-ledger", "stellarchain"}
-VERIFICATION = {"unverified", "first_party", "sep1_domain"}
+VERIFICATION = {"unverified", "first_party", "sep1_domain", "stellarchain_verified"}
 MAX_ASSETS = 20_000
 MAX_ASSET_BYTES = 25 * 1024 * 1024
 HEADERS = """\
@@ -72,12 +72,16 @@ def collect(source):
                 if origin not in SOURCES:
                     raise ValueError("unknown public source")
                 if verification not in VERIFICATION:
-                    raise ValueError("expected unverified, first_party, or sep1_domain")
+                    raise ValueError(f"expected one of {', '.join(sorted(VERIFICATION))}")
                 if not label and verification != "unverified":
                     raise ValueError("verification requires a label")
                 record = make_record(network, address, asset_code)
                 if verification == "sep1_domain" and record["type"] != "account" and not record.get("issuer"):
                     raise ValueError("SEP-1 domain verification requires an account or asset issuer")
+                if verification == "stellarchain_verified" and (
+                    network, origin, record["type"]
+                ) != ("mainnet", "stellarchain", "account"):
+                    raise ValueError("StellarChain verification requires a StellarChain mainnet account")
 
                 key = (network, "assets", record["id"]) if asset_code else (network, "addresses", address)
                 if key in records:

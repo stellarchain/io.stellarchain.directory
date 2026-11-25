@@ -4,6 +4,6 @@
 
 ## Why
 
-<!-- Link to a public source for the label. For verification changes, link to the exact first-party listing or the account and its SEP-1 file. -->
+<!-- Link to a public source for the label. For verification changes, link to the public record supporting verification of the exact identifier and label. -->
 
 - [ ] This pull request contains public information only.

@@ -86,6 +86,24 @@ class DirectoryTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "expected 6 columns"):
             collect(source)
 
+    def test_stellarchain_verification_is_for_mainnet_account_labels(self):
+        source = self.put([
+            ("mainnet", ACCOUNT, "Example account", "stellarchain", "stellarchain_verified", ""),
+        ])
+        record = collect(source)["mainnet", "addresses", ACCOUNT]
+        self.assertEqual(record["verification"], "stellarchain_verified")
+
+        for network, address, origin, asset_code in (
+            ("testnet", ACCOUNT, "stellarchain", ""),
+            ("mainnet", CONTRACT, "stellarchain", ""),
+            ("mainnet", ACCOUNT, "community", ""),
+            ("mainnet", ACCOUNT, "stellarchain", "USD"),
+        ):
+            with self.subTest(network=network, address=address, source=origin, asset_code=asset_code):
+                self.put([(network, address, "Example", origin, "stellarchain_verified", asset_code)])
+                with self.assertRaisesRegex(ValueError, "StellarChain verification requires a StellarChain mainnet account"):
+                    collect(source)
+
     def test_classic_assets_keep_their_own_identity(self):
         source = self.put([
             ("mainnet", ACCOUNT, "Example issuer", "community", "sep1_domain", ""),
