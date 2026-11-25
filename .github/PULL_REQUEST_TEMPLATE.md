@@ -4,6 +4,6 @@
 
 ## Why
 
-<!-- Link to a public source for the label. For verification changes, link to the public record supporting verification of the exact identifier and label. -->
+<!-- Explain the change and link to a public HTTPS source for each new or corrected label or verification upgrade. Include the exact identifier and label. -->
 
 - [ ] This pull request contains public information only.

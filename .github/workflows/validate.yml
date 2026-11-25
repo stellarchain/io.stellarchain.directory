@@ -2,6 +2,7 @@ name: Validate directory
 
 on:
   pull_request:
+    types: [opened, reopened, synchronize, edited]
   push:
     branches: [main]
   workflow_dispatch:
@@ -15,18 +16,24 @@ concurrency:
 
 jobs:
   validate:
+    name: Validate CSV and build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           persist-credentials: false
+          fetch-depth: 2
       - run: python3 -m unittest discover -s tests
       - run: python3 scripts/build.py
+      - name: Summarize directory changes
+        if: github.event_name == 'pull_request'
+        run: python3 scripts/review_csv.py HEAD^1
 
   deploy:
     needs: validate
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.CLOUDFLARE_ACCOUNT_ID != ''
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment: production
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -40,3 +47,4 @@ jobs:
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - run: python3 scripts/smoke.py
