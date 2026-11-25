@@ -2,7 +2,7 @@
 
 ## What
 
-A community-maintained directory of public Stellar addresses and their labels. The list lives in one CSV file and is available through a public JSON API.
+A community-maintained directory of Stellar accounts, contracts, and assets. One CSV powers the public JSON API.
 
 [Browse the CSV](directory.csv) · [Data sources and notices](NOTICE) · [Project license](LICENSE)
 
@@ -13,16 +13,31 @@ A community-maintained directory of public Stellar addresses and their labels. T
 | GET or HEAD | Result |
 | --- | --- |
 | [`/manifest.json`](https://stellarchain-directory.stellarchain.workers.dev/manifest.json) | Available networks, endpoints, counts, and download checksums |
-| [`/mainnet/directory.json`](https://stellarchain-directory.stellarchain.workers.dev/mainnet/directory.json) | All mainnet records as a JSON array |
+| [`/mainnet/directory.json`](https://stellarchain-directory.stellarchain.workers.dev/mainnet/directory.json) | All mainnet address records |
 | `/mainnet/addresses/{address}.json` | Look up one uppercase address. [Example lookup for the Burn Account](https://stellarchain-directory.stellarchain.workers.dev/mainnet/addresses/GALAXYVOIDAOPZTDLHILAJQKCVVFMD4IKLXLSZV5YHO7VY74IWZILUTO.json) |
+| [`/mainnet/assets.json`](https://stellarchain-directory.stellarchain.workers.dev/mainnet/assets.json) | All mainnet classic asset records |
+| `/mainnet/assets/{id}.json` | Look up `CODE-ISSUER` or [`native`](https://stellarchain-directory.stellarchain.workers.dev/mainnet/assets/native.json) for XLM |
 
-Each record has `network`, `address`, `type`, and a `label` when available. A missing address returns `404`. Use `ETag` with `If-None-Match` to revalidate cached responses. Automated clients should send a descriptive `User-Agent`. [Cloudflare client guidance](https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1010/)
+Address types come from the Stellar address encoding. Soroban token contracts use their contract address. Classic assets use their code and issuer. [Stellar asset identities](https://developers.stellar.org/docs/learn/fundamentals/stellar-data-structures/assets)
+
+Each record has a `source` and a `verification` value for its label. A missing record returns `404`. Use `ETag` with `If-None-Match` to revalidate cached responses. Automated clients should send a descriptive `User-Agent`. [Cloudflare client guidance](https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1010/)
+
+### Verification
+
+| Value | What reviewers checked |
+| --- | --- |
+| `unverified` | No first-party check recorded |
+| `first_party` | The project publishes the exact address or asset in its official documentation |
+| `sep1_domain` | The account or issuer points to a domain whose `stellar.toml` lists the same account or exact asset |
+
+Verification describes the basis for the label. Contract build verification is defined separately by SEP-55. [SEP-1](https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md) · [SEP-55](https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0055.md)
 
 ### Contribute an address
 
 1. Open [directory.csv](directory.csv) and use GitHub's edit button.
-2. Add or edit a row with `network,address,label`. Use `mainnet`, `testnet`, or `futurenet` and the full uppercase public address. Use one row per address per network. Put labels containing commas in double quotes.
-3. Open a pull request using the [PR template](.github/PULL_REQUEST_TEMPLATE.md). Link to a public source that shows the address and supports the label. For corrections or removals, explain the change.
+2. Add or edit a row with `network,address,label,source,verification,asset_code`. Use `mainnet`, `testnet`, or `futurenet` and the full uppercase public address. For a community submission, use `community` and `unverified`. Put labels containing commas in double quotes.
+3. Leave `asset_code` blank for address records. For a classic asset, put the issuer in `address` and its code in `asset_code`. Use a blank issuer with `XLM` for the native asset.
+4. Open a pull request using the [PR template](.github/PULL_REQUEST_TEMPLATE.md). Link to a public source that shows the exact identifier and supports the label. Include the proof for any verification change.
 
 Use an issue to [suggest a directory change](https://github.com/stellarchain/io.stellarchain.directory/issues/new?template=directory-change.yml) or [report an API problem](https://github.com/stellarchain/io.stellarchain.directory/issues/new?template=api-problem.yml).
 

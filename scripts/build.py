@@ -3,6 +3,7 @@
 import csv
 import hashlib
 import json
+import re
 import shutil
 import sys
 import tempfile
@@ -14,7 +15,9 @@ from strkey import address_type
 
 ROOT = Path(__file__).resolve().parents[1]
 NETWORKS = ("mainnet", "testnet", "futurenet")
-COLUMNS = ["network", "address", "label"]
+COLUMNS = ["network", "address", "label", "source", "verification", "asset_code"]
+SOURCES = {"circle", "community", "stellar", "stellar-expert", "stellar-ledger", "stellarchain"}
+VERIFICATION = {"unverified", "first_party", "sep1_domain"}
 MAX_ASSETS = 20_000
 MAX_ASSET_BYTES = 25 * 1024 * 1024
 HEADERS = """\
@@ -31,6 +34,26 @@ def validate_label(label):
         raise ValueError("expected a printable label of 1–120 characters without surrounding spaces")
 
 
+def make_record(network, address, asset_code):
+    if not asset_code:
+        return {"network": network, "address": address, "type": address_type(address)}
+
+    if not re.fullmatch(r"[A-Za-z0-9]{1,12}", asset_code):
+        raise ValueError("expected an alphanumeric asset code of 1–12 characters")
+    if address and address_type(address) != "account":
+        raise ValueError("asset issuer must be an account")
+    if not address and asset_code != "XLM":
+        raise ValueError("only native XLM can have an empty asset issuer")
+
+    return {
+        "network": network,
+        "id": f"{asset_code}-{address}" if address else "native",
+        "type": "asset",
+        "asset_code": asset_code,
+        "issuer": address or None,
+    }
+
+
 def collect(source):
     records = {}
     with source.open(encoding="utf-8-sig", newline="") as contents:
@@ -43,17 +66,27 @@ def collect(source):
                     continue
                 if len(row) != len(COLUMNS):
                     raise ValueError(f"expected {len(COLUMNS)} columns")
-                network, address, label = row
+                network, address, label, origin, verification, asset_code = row
                 if network not in NETWORKS:
                     raise ValueError("expected mainnet, testnet, or futurenet")
-                kind = address_type(address)
-                key = (network, address)
+                if origin not in SOURCES:
+                    raise ValueError("unknown public source")
+                if verification not in VERIFICATION:
+                    raise ValueError("expected unverified, first_party, or sep1_domain")
+                if not label and verification != "unverified":
+                    raise ValueError("verification requires a label")
+                record = make_record(network, address, asset_code)
+                if verification == "sep1_domain" and record["type"] != "account" and not record.get("issuer"):
+                    raise ValueError("SEP-1 domain verification requires an account or asset issuer")
+
+                key = (network, "assets", record["id"]) if asset_code else (network, "addresses", address)
                 if key in records:
-                    raise ValueError("duplicate address on the same network")
-                record = {"network": network, "address": address, "type": kind}
+                    raise ValueError("duplicate asset on the same network" if asset_code else "duplicate address on the same network")
                 if label:
                     validate_label(label)
                     record["label"] = label
+                record["source"] = origin
+                record["verification"] = verification
                 records[key] = record
         except (csv.Error, ValueError) as error:
             raise ValueError(f"{source.name}:{max(reader.line_num, 1)}: {error}") from error
@@ -71,34 +104,41 @@ def write_json(path, value):
     return payload
 
 
+def write_collection(network_dir, folder, filename, id_field, entries):
+    item_dir = network_dir / folder
+    item_dir.mkdir(parents=True)
+    for entry in entries:
+        write_json(item_dir / f"{entry[id_field]}.json", entry)
+
+    directory = write_json(network_dir / filename, entries)
+    return {
+        "count": len(entries),
+        "directory": f"/{network_dir.name}/{filename}",
+        "lookup": f"/{network_dir.name}/{folder}/{{{id_field}}}.json",
+        "bytes": len(directory),
+        "sha256": hashlib.sha256(directory).hexdigest(),
+    }
+
+
 def build(source, output_dir):
     records = collect(source)
-    networks = defaultdict(list)
-    for (network, _), record in sorted(records.items()):
-        networks[network].append(record)
+    networks = defaultdict(lambda: {"addresses": [], "assets": []})
+    for (network, folder, _), record in sorted(records.items()):
+        networks[network][folder].append(record)
 
-    files = len(records) + len(networks) + 1
+    files = len(records) + sum(1 + bool(groups["assets"]) for groups in networks.values()) + 1
     if files > MAX_ASSETS:
         raise ValueError(f"{files:,} JSON files exceed the Cloudflare Free asset limit of {MAX_ASSETS:,}")
 
     with tempfile.TemporaryDirectory(prefix=".directory-", dir=output_dir.parent) as temp_dir:
         staging = Path(temp_dir) / "dist"
         manifest = {"networks": {}}
-        for network, entries in networks.items():
+        for network, groups in networks.items():
             network_dir = staging / network
-            address_dir = network_dir / "addresses"
-            address_dir.mkdir(parents=True)
-            for entry in entries:
-                write_json(address_dir / f"{entry['address']}.json", entry)
-
-            directory = write_json(network_dir / "directory.json", entries)
-            manifest["networks"][network] = {
-                "count": len(entries),
-                "directory": f"/{network}/directory.json",
-                "lookup": f"/{network}/addresses/{{address}}.json",
-                "bytes": len(directory),
-                "sha256": hashlib.sha256(directory).hexdigest(),
-            }
+            summary = write_collection(network_dir, "addresses", "directory.json", "address", groups["addresses"])
+            if groups["assets"]:
+                summary["assets"] = write_collection(network_dir, "assets", "assets.json", "id", groups["assets"])
+            manifest["networks"][network] = summary
 
         write_json(staging / "manifest.json", manifest)
         (staging / "_headers").write_text(HEADERS, encoding="utf-8")
@@ -107,7 +147,7 @@ def build(source, output_dir):
             shutil.rmtree(output_dir)
         staging.rename(output_dir)
 
-    print(f"Built {len(records):,} addresses in {files:,} JSON files")
+    print(f"Built {len(records):,} directory entries in {files:,} JSON files")
 
 
 if __name__ == "__main__":

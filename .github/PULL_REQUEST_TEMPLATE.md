@@ -1,9 +1,9 @@
 ## What changed
 
-<!-- For edits to directory.csv, include the network and full public address. -->
+<!-- Include the network and full public address or asset code and issuer. -->
 
 ## Why
 
-<!-- Explain the addition, correction, or removal. Link to a public source for any label you add or change. -->
+<!-- Link to a public source for the label. For verification changes, link to the exact first-party listing or the account and its SEP-1 file. -->
 
 - [ ] This pull request contains public information only.

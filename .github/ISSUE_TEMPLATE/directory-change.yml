@@ -1,5 +1,5 @@
 name: Directory change
-description: Suggest an address, correct a label, or request a removal.
+description: Suggest an address or asset, correct a label, or request a removal.
 body:
   - type: dropdown
     id: network
@@ -12,10 +12,10 @@ body:
     validations:
       required: true
   - type: input
-    id: address
+    id: identifier
     attributes:
-      label: Public Stellar address
-      description: Use the full uppercase address.
+      label: Public Stellar identifier
+      description: Enter a full uppercase address, an asset code and issuer, or native XLM.
     validations:
       required: true
   - type: textarea
@@ -29,4 +29,4 @@ body:
     id: source
     attributes:
       label: Public source link
-      description: Link to a public page that shows the address or supports the change.
+      description: Link to a public page that shows the identifier and supports the change.

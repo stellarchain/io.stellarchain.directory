@@ -3,14 +3,38 @@ Data sources and license notices
 
 LICENSE covers the project's original code and accompanying documentation.
 
-StellarChain
+StellarChain (stellarchain)
 ------------
 The original 842 mainnet records were combined from these two public files:
 
 https://github.com/stellarchain/v4-api/blob/064ccd2e5c49d4b5188ecf3cd421256d5d72b7f6/resources/known_accounts.csv
 https://github.com/stellarchain/v4-api/blob/064ccd2e5c49d4b5188ecf3cd421256d5d72b7f6/resources/known_accounts_with_balance_and_transactions.csv
 
-StellarExpert
+Public Stellar ledger (stellar-ledger)
+-------------------------------------
+Address-only entries were confirmed against the public account endpoint.
+
+https://pubnet.stellarchain.io/accounts
+
+Stellar documentation (stellar)
+-------------------------------
+Native XLM is documented in the Stellar asset reference.
+
+https://developers.stellar.org/docs/learn/fundamentals/stellar-data-structures/assets
+
+Circle (circle)
+---------------
+Circle publishes its USDC and EURC issuer identifiers and CCTP contract addresses.
+
+https://developers.circle.com/stablecoins/usdc-contract-addresses
+https://developers.circle.com/stablecoins/eurc-contract-addresses
+https://developers.circle.com/cctp/references/stellar-contracts
+
+Community (community)
+---------------------
+Contributors provide public source links in their pull requests.
+
+StellarExpert (stellar-expert)
 -------------
 An additional 657 mainnet records came from this public directory snapshot:
 
