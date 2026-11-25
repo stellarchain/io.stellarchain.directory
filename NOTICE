@@ -18,9 +18,10 @@ https://pubnet.stellarchain.io/accounts
 
 Stellar documentation (stellar)
 -------------------------------
-Native XLM is documented in the Stellar asset reference.
+Native XLM is documented in the Stellar asset reference. The Stellar Development Foundation published the Burn Account address.
 
 https://developers.stellar.org/docs/learn/fundamentals/stellar-data-structures/assets
+https://stellar.org/blog/foundation-news/sdfs-next-steps
 
 Circle (circle)
 ---------------
@@ -29,6 +30,16 @@ Circle publishes its USDC and EURC issuer identifiers and CCTP contract addresse
 https://developers.circle.com/stablecoins/usdc-contract-addresses
 https://developers.circle.com/stablecoins/eurc-contract-addresses
 https://developers.circle.com/cctp/references/stellar-contracts
+
+Issuer publications (issuer)
+----------------------------
+AQUA: https://docs.aqua.network/developers/code-examples/get-pools-info
+EURC (MYKOBO): https://mykobo.co/.well-known/stellar.toml
+PYUSD: https://docs.paxos.com/api-reference/endpoints/deposit-addresses/create-deposit-address
+SHX: https://stronghold.co/.well-known/stellar.toml
+USDT0: https://docs.usdt0.to/technical-documentation/deployments?q=stellar
+VELO: https://www.velo.org/token
+yXLM and yUSDC: https://ultracapital.xyz/.well-known/stellar.toml
 
 Community (community)
 ---------------------

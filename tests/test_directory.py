@@ -89,7 +89,7 @@ class DirectoryTest(unittest.TestCase):
     def test_classic_assets_keep_their_own_identity(self):
         source = self.put([
             ("mainnet", ACCOUNT, "Example issuer", "community", "sep1_domain", ""),
-            ("mainnet", ACCOUNT, "Example asset", "community", "sep1_domain", "USD"),
+            ("mainnet", ACCOUNT, "Example asset", "issuer", "sep1_domain", "USD"),
             ("mainnet", "", "Stellar Lumen", "stellar", "first_party", "XLM"),
         ])
         dist = self.root / "dist"
@@ -104,6 +104,7 @@ class DirectoryTest(unittest.TestCase):
         self.assertEqual(asset["id"], "USD-" + ACCOUNT)
         self.assertEqual(asset["issuer"], ACCOUNT)
         self.assertEqual(asset["type"], "asset")
+        self.assertEqual(asset["source"], "issuer")
         self.assertEqual(native["id"], "native")
         self.assertIsNone(native["issuer"])
         self.assertEqual(json.loads((root / "assets" / f"{asset['id']}.json").read_bytes()), asset)

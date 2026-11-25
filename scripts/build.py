@@ -16,7 +16,7 @@ from strkey import address_type
 ROOT = Path(__file__).resolve().parents[1]
 NETWORKS = ("mainnet", "testnet", "futurenet")
 COLUMNS = ["network", "address", "label", "source", "verification", "asset_code"]
-SOURCES = {"circle", "community", "stellar", "stellar-expert", "stellar-ledger", "stellarchain"}
+SOURCES = {"circle", "community", "issuer", "stellar", "stellar-expert", "stellar-ledger", "stellarchain"}
 VERIFICATION = {"unverified", "first_party", "sep1_domain"}
 MAX_ASSETS = 20_000
 MAX_ASSET_BYTES = 25 * 1024 * 1024

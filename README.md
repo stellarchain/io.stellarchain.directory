@@ -26,7 +26,7 @@ Each record has a `source` and a `verification` value for its label. A missing r
 
 | Value | What reviewers checked |
 | --- | --- |
-| `unverified` | No first-party check recorded |
+| `unverified` | No verification recorded |
 | `first_party` | The project publishes the exact address or asset in its official documentation |
 | `sep1_domain` | The account or issuer points to a domain whose `stellar.toml` lists the same account or exact asset |
 
