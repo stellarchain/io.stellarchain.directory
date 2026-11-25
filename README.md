@@ -12,11 +12,11 @@ A community-maintained directory of Stellar accounts, contracts, and assets. One
 
 | GET or HEAD | Result |
 | --- | --- |
-| [`/manifest.json`](https://stellarchain-directory.stellarchain.workers.dev/manifest.json) | Available networks, endpoints, counts, and download checksums |
-| [`/mainnet/directory.json`](https://stellarchain-directory.stellarchain.workers.dev/mainnet/directory.json) | All mainnet address records |
-| `/mainnet/addresses/{address}.json` | Look up one uppercase address. [Example lookup for the Burn Account](https://stellarchain-directory.stellarchain.workers.dev/mainnet/addresses/GALAXYVOIDAOPZTDLHILAJQKCVVFMD4IKLXLSZV5YHO7VY74IWZILUTO.json) |
-| [`/mainnet/assets.json`](https://stellarchain-directory.stellarchain.workers.dev/mainnet/assets.json) | All mainnet classic asset records |
-| `/mainnet/assets/{id}.json` | Look up `CODE-ISSUER` or [`native`](https://stellarchain-directory.stellarchain.workers.dev/mainnet/assets/native.json) for XLM |
+| [`/manifest.json`](https://directory.stellarchain.io/manifest.json) | Available networks, endpoints, counts, and download checksums |
+| [`/mainnet/directory.json`](https://directory.stellarchain.io/mainnet/directory.json) | All mainnet address records |
+| `/mainnet/addresses/{address}.json` | Look up one uppercase address. [Example lookup for the Burn Account](https://directory.stellarchain.io/mainnet/addresses/GALAXYVOIDAOPZTDLHILAJQKCVVFMD4IKLXLSZV5YHO7VY74IWZILUTO.json) |
+| [`/mainnet/assets.json`](https://directory.stellarchain.io/mainnet/assets.json) | All mainnet classic asset records |
+| `/mainnet/assets/{id}.json` | Look up `CODE-ISSUER` or [`native`](https://directory.stellarchain.io/mainnet/assets/native.json) for XLM |
 
 Address types come from the Stellar address encoding. Soroban token contracts use their contract address. Classic assets use their code and issuer. [Stellar asset identities](https://developers.stellar.org/docs/learn/fundamentals/stellar-data-structures/assets)
 
