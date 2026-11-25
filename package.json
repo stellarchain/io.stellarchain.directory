@@ -1,0 +1,12 @@
+{
+  "name": "stellarchain-directory",
+  "private": true,
+  "scripts": {
+    "build": "python3 scripts/build.py",
+    "dev": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "4.168.0"
+  }
+}

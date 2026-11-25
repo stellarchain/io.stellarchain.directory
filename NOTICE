@@ -1,0 +1,39 @@
+StellarChain Directory
+Data sources and license notices
+
+LICENSE covers the project's original code and accompanying documentation.
+
+StellarChain
+------------
+The original 842 mainnet records were combined from these two public files:
+
+https://github.com/stellarchain/v4-api/blob/064ccd2e5c49d4b5188ecf3cd421256d5d72b7f6/resources/known_accounts.csv
+https://github.com/stellarchain/v4-api/blob/064ccd2e5c49d4b5188ecf3cd421256d5d72b7f6/resources/known_accounts_with_balance_and_transactions.csv
+
+StellarExpert
+-------------
+An additional 657 mainnet records came from this public directory snapshot:
+
+https://github.com/stellar-expert/public-directory/tree/b78cf196f79a73daed6cc1bc4166001cef98d86f/accounts
+
+MIT License
+
+Copyright (c) 2022 StellarExpert
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

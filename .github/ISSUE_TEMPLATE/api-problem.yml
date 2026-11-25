@@ -1,0 +1,22 @@
+name: API problem
+description: Report an unexpected response or an unavailable endpoint.
+body:
+  - type: input
+    id: endpoint
+    attributes:
+      label: Endpoint URL
+      placeholder: https://stellarchain-directory.stellarchain.workers.dev/manifest.json
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What happened?
+      description: Describe the response you received and what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: request
+    attributes:
+      label: Request details
+      description: Include the HTTP status or a request someone else can run. Use public information only.

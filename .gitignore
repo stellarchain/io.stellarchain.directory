@@ -1,0 +1,11 @@
+.DS_Store
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+/dist/
+/node_modules/
+/.wrangler/
+__pycache__/

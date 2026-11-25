@@ -1,0 +1,32 @@
+name: Directory change
+description: Suggest an address, correct a label, or request a removal.
+body:
+  - type: dropdown
+    id: network
+    attributes:
+      label: Network
+      options:
+        - mainnet
+        - testnet
+        - futurenet
+    validations:
+      required: true
+  - type: input
+    id: address
+    attributes:
+      label: Public Stellar address
+      description: Use the full uppercase address.
+    validations:
+      required: true
+  - type: textarea
+    id: change
+    attributes:
+      label: What should change?
+      description: Provide the proposed label or explain why the entry needs to be corrected or removed.
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Public source link
+      description: Link to a public page that shows the address or supports the change.
