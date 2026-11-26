@@ -20,7 +20,7 @@ def summarize(before, after):
     added = after.keys() - before.keys()
     removed = before.keys() - after.keys()
     common = before.keys() & after.keys()
-    fields = ("label", "source", "verification")
+    fields = ("label", "source", "verification", "role")
     changed = {
         key: [field for field in fields if before[key].get(field) != after[key].get(field)]
         for key in common if before[key] != after[key]
@@ -42,7 +42,10 @@ def summarize(before, after):
                 )
             else:
                 records = after if change == "Added" else before
-                detail = records[key].get("label", "—")
+                record = records[key]
+                detail = record.get("label", "—")
+                if "role" in record:
+                    detail += f", role {record['role']}"
             rows.append((change, key[0], key[2], detail))
     if rows:
         lines += ["| Change | Network | Identifier | Details |", "| --- | --- | --- | --- |"]
@@ -52,9 +55,10 @@ def summarize(before, after):
         if len(rows) > 50:
             lines += ["", f"Showing 50 of {len(rows)} changed records."]
     needs_source = (
-        any(after[key].get("label") for key in added)
+        any(after[key].get("label") or after[key].get("role") for key in added)
         or any(
-            "label" in changes or ("verification" in changes and after[key]["verification"] != "unverified")
+            "label" in changes or "role" in changes
+            or ("verification" in changes and after[key]["verification"] != "unverified")
             for key, changes in changed.items()
         )
     )
@@ -83,4 +87,4 @@ if __name__ == "__main__":
         output.write(summary)
     event = json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text(encoding="utf-8"))
     if needs_source and not has_source(event["pull_request"]["body"]):
-        sys.exit("Add a public HTTPS source to the PR description for new labels, corrections, and verification upgrades.")
+        sys.exit("Add a public HTTPS source to the PR description for label, role, and verification changes.")

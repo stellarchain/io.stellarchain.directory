@@ -126,6 +126,22 @@ class DirectoryTest(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "StellarChain verification requires a StellarChain mainnet account"):
                     collect(source)
 
+    def test_validator_role_is_optional_and_requires_a_classic_public_key(self):
+        source = self.put([("mainnet", ACCOUNT, "Node", "stellar", "first_party", "")])
+        previous = collect(source)
+        header, row = source.read_text().splitlines()
+        source.write_text(f"{header},role\n{row},validator\n", encoding="utf-8")
+        added_role = collect(source)
+        key = ("mainnet", "addresses", ACCOUNT)
+        self.assertEqual(added_role[key], {**previous[key], "role": "validator"})
+        summary, needs_source = summarize(previous, added_role)
+        self.assertIn("role — → validator", summary)
+        self.assertTrue(needs_source)
+
+        source.write_text(f"{header},role\n{row.replace(ACCOUNT, CONTRACT)},validator\n", encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "validator role requires a classic public key"):
+            collect(source)
+
     def test_classic_assets_keep_their_own_identity(self):
         source = self.put([
             ("mainnet", ACCOUNT, "Example issuer", "community", "sep1_domain", ""),

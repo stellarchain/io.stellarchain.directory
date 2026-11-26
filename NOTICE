@@ -16,9 +16,16 @@ https://github.com/stellarchain/v4-api/blob/b3fa2a85529b47d8f6765270724650f4ef6c
 
 Public Stellar ledger (stellar-ledger)
 -------------------------------------
-Address-only entries were confirmed against the public account endpoint.
+Public accounts and assets were checked in Horizon. Contract instances and token
+names were checked in Soroban RPC. The curated feeds below supplied identifiers
+for discovery. Classic asset labels from the ledger use the exact asset code.
 
 https://pubnet.stellarchain.io/accounts
+https://horizon.stellar.org/assets
+https://developers.stellar.org/docs/data/apis/rpc/api-reference/methods/getLedgerEntries
+https://lobstr.co/api/v1/sep/assets/curated.json
+https://github.com/soroswap/token-list/blob/cf34047027407352c4d5e3bd89a2917a42393e9e/tokenList.json
+https://api.stellar.expert/explorer/public/asset-list/top50
 
 Stellar documentation (stellar)
 -------------------------------
@@ -26,6 +33,21 @@ Native XLM is documented in the Stellar asset reference. The Stellar Development
 
 https://developers.stellar.org/docs/learn/fundamentals/stellar-data-structures/assets
 https://stellar.org/blog/foundation-news/sdfs-next-steps
+
+Validator labels come from the SDF public-network configuration. The operators
+publish the same signing keys in their stellar.toml validator lists.
+
+https://github.com/stellar/packages/blob/e3a92b9d74a0a2f2071923516d238dceca60df33/docs/examples/pubnet-validator-full/stellar-core.cfg
+https://lobstr.co/.well-known/stellar.toml
+https://www.moneygram.com/.well-known/stellar.toml
+https://publicnode.org/.well-known/stellar.toml
+https://stellar.blockdaemon.com/.well-known/stellar.toml
+https://stellar.creit.tech/.well-known/stellar.toml
+https://stellar.validator.range.org/.well-known/stellar.toml
+https://stellar.withobsrvr.com/.well-known/stellar.toml
+https://www.franklintempleton.com/.well-known/stellar.toml
+https://stellar.org/.well-known/stellar.toml
+https://www.ylds.com/.well-known/stellar.toml
 
 Circle (circle)
 ---------------
@@ -43,7 +65,38 @@ PYUSD: https://docs.paxos.com/api-reference/endpoints/deposit-addresses/create-d
 SHX: https://stronghold.co/.well-known/stellar.toml
 USDT0: https://docs.usdt0.to/technical-documentation/deployments?q=stellar
 VELO: https://www.velo.org/token
-yXLM and yUSDC: https://ultracapital.xyz/.well-known/stellar.toml
+Ultra Capital assets: https://ultracapital.xyz/.well-known/stellar.toml
+BENJI and gBENJI: https://www.franklintempleton.com/.well-known/stellar.toml
+CETES and USTRY: https://etherfuse.com/.well-known/stellar.toml
+USDGLO: https://app.glodollar.org/.well-known/stellar.toml
+USDY: https://ondo.finance/.well-known/stellar.toml
+XRF: https://reflector.network/.well-known/stellar.toml
+
+Project deployments (project)
+-----------------------------
+Published mainnet deployments identify the addresses and roles of project
+contracts. Blend also publishes the BLND classic asset identity.
+
+https://docs.blend.capital/mainnet-deployments
+https://docs-v1.blend.capital/mainnet-deployments
+https://github.com/blend-capital/blend-utils/blob/d5bfbaf4fec4df66b35ff52b98b3b2db38a83c9d/mainnet.contracts.json
+https://github.com/Spiko-Tech/stellar-contracts/blob/776ed77c05b4e36eed1b9cfac3f7b896d594071e/address/production.json
+https://github.com/paltalabs/defindex/blob/206996139f859d60a2c26b76090979415eeee15b/public/mainnet.contracts.json
+https://github.com/soroswap/core/blob/42483fc4c1fc65d1a64b4b460383a3d937cf45e7/public/mainnet.contracts.json
+https://docs.aqua.network/developers/code-examples/prerequisites-and-basics
+
+The Stellar ecosystem directory is a discovery source for additional publisher
+documentation.
+
+https://stellar.org/ecosystem
+
+Stellar Registry (stellar-registry)
+-----------------------------------
+The mainnet index supplies public names in channel/name form. Contract instances
+are checked in Soroban RPC. Registry names carry an unverified label status.
+
+https://stellar.rgstry.xyz/
+https://stellar-registry-mainnet.fly.dev/v1/contracts
 
 Community (community)
 ---------------------

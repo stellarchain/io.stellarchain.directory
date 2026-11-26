@@ -27,7 +27,11 @@
       "required": ["address"],
       "properties": {
         "type": { "enum": ["account", "contract", "muxed_account", "muxed_contract"] },
-        "address": { "type": "string", "pattern": "^([GC][A-Z2-7]{55}|[MW][A-Z2-7]{68})$" }
+        "address": { "type": "string", "pattern": "^([GC][A-Z2-7]{55}|[MW][A-Z2-7]{68})$" },
+        "role": { "const": "validator" }
+      },
+      "dependentSchemas": {
+        "role": { "properties": { "type": { "const": "account" }, "address": { "pattern": "^G" } } }
       }
     },
     "asset": {
@@ -37,7 +41,8 @@
         "type": { "const": "asset" },
         "id": { "type": "string", "pattern": "^(native|[A-Za-z0-9]{1,12}-G[A-Z2-7]{55})$" },
         "asset_code": { "type": "string", "pattern": "^[A-Za-z0-9]{1,12}$" },
-        "issuer": { "type": ["string", "null"], "pattern": "^G[A-Z2-7]{55}$" }
+        "issuer": { "type": ["string", "null"], "pattern": "^G[A-Z2-7]{55}$" },
+        "role": false
       },
       "if": { "properties": { "id": { "const": "native" } } },
       "then": { "properties": { "asset_code": { "const": "XLM" }, "issuer": { "type": "null" } } },
