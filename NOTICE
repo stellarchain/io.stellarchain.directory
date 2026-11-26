@@ -34,6 +34,11 @@ Native XLM is documented in the Stellar asset reference. The Stellar Development
 https://developers.stellar.org/docs/learn/fundamentals/stellar-data-structures/assets
 https://stellar.org/blog/foundation-news/sdfs-next-steps
 
+Stellar's USDT0 documentation lists the asset contract, OFT contract, and
+LayerZero endpoint on mainnet.
+
+https://developers.stellar.org/docs/tokens/usdt0-layerzero
+
 Validator labels come from the SDF public-network configuration. The operators
 publish the same signing keys in their stellar.toml validator lists.
 
@@ -60,11 +65,13 @@ https://developers.circle.com/cctp/references/stellar-contracts
 Issuer publications (issuer)
 ----------------------------
 AQUA: https://docs.aqua.network/developers/code-examples/get-pools-info
+AUDD: https://devhub.audd.digital/docs/supported-blockchains
 EURC (MYKOBO): https://mykobo.co/.well-known/stellar.toml
 PYUSD: https://docs.paxos.com/api-reference/endpoints/deposit-addresses/create-deposit-address
 SHX: https://stronghold.co/.well-known/stellar.toml
 USDT0: https://docs.usdt0.to/technical-documentation/deployments?q=stellar
 VELO: https://www.velo.org/token
+VCHF and VNX accounts: https://vnx.io/.well-known/stellar.toml
 Ultra Capital assets: https://ultracapital.xyz/.well-known/stellar.toml
 BENJI and gBENJI: https://www.franklintempleton.com/.well-known/stellar.toml
 CETES and USTRY: https://etherfuse.com/.well-known/stellar.toml
@@ -84,6 +91,11 @@ https://github.com/Spiko-Tech/stellar-contracts/blob/776ed77c05b4e36eed1b9cfac3f
 https://github.com/paltalabs/defindex/blob/206996139f859d60a2c26b76090979415eeee15b/public/mainnet.contracts.json
 https://github.com/soroswap/core/blob/42483fc4c1fc65d1a64b4b460383a3d937cf45e7/public/mainnet.contracts.json
 https://docs.aqua.network/developers/code-examples/prerequisites-and-basics
+https://github.com/axelarnetwork/axelar-contract-deployments/blob/5f831550e98e13d95590a600445e4c65b3d6a055/axelar-chains-config/info/mainnet.json
+https://docs.centrifuge.io/developer/protocol/deployments/
+https://docs.pyth.network/pro/contract-addresses
+https://dev.spectra.finance/docs/technical-reference/deployed-contracts
+https://developer.vialabs.tech/docs/examples/stellar/overview/
 
 The Stellar ecosystem directory is a discovery source for additional publisher
 documentation.
