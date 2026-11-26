@@ -21,6 +21,8 @@ A community-maintained directory of Stellar accounts, contracts, and assets. One
 
 Address types come from the Stellar address encoding. Soroban token contracts use their contract address. Classic assets use their code and issuer. [Stellar asset identities](https://developers.stellar.org/docs/learn/fundamentals/stellar-data-structures/assets)
 
+An address with `role: "validator"` is a public Stellar consensus signing key. It may have no ledger account.
+
 Each record has a `source` and a `verification` value for its label. A missing record returns `404`. In browsers, use ordinary `fetch(url)` and let the HTTP cache revalidate the response. Server clients can send the previous `ETag` as `If-None-Match` and reuse their saved response on `304`. Send a descriptive `User-Agent` from automated clients. [Browser cache behavior](https://developer.mozilla.org/en-US/docs/Web/API/Request/cache)
 
 ### Verification
@@ -37,8 +39,8 @@ Verification describes the basis for the label. Contract build verification is d
 ### Contribute an address
 
 1. Open [directory.csv](directory.csv) and use GitHub's edit button.
-2. Add or edit a row with `network,address,label,source,verification,asset_code`. Use `mainnet`, `testnet`, or `futurenet` and the full uppercase public address. For a community submission, use `community` and `unverified`. Put labels containing commas in double quotes.
-3. Leave `asset_code` blank for address records. For a classic asset, put the issuer in `address` and its code in `asset_code`. Use a blank issuer with `XLM` for the native asset.
+2. Add or edit a row with `network,address,label,source,verification,asset_code,role`. Use `mainnet`, `testnet`, or `futurenet` and the full uppercase public address. For a community submission, use `community` and `unverified`. Put labels containing commas in double quotes.
+3. Use `validator` in `role` for a published validator signing key. Leave `role` blank for other entries and `asset_code` blank for address records. For a classic asset, put the issuer in `address` and its code in `asset_code`. Use a blank issuer with `XLM` for the native asset.
 4. Open a pull request using the [PR template](.github/PULL_REQUEST_TEMPLATE.md). Link to a public source that shows the exact identifier and supports the label. The checks summarize directory changes for reviewers. For SEP-1 verification changes, include the issuer's or account's public `stellar.toml` in [NOTICE](NOTICE) so the proof can be checked again.
 
 Use an issue to [suggest a directory change](https://github.com/stellarchain/io.stellarchain.directory/issues/new?template=directory-change.yml) or [report an API problem](https://github.com/stellarchain/io.stellarchain.directory/issues/new?template=api-problem.yml).

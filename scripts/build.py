@@ -15,8 +15,12 @@ from strkey import address_type
 
 ROOT = Path(__file__).resolve().parents[1]
 NETWORKS = ("mainnet", "testnet", "futurenet")
-COLUMNS = ["network", "address", "label", "source", "verification", "asset_code"]
-SOURCES = {"circle", "community", "issuer", "stellar", "stellar-expert", "stellar-ledger", "stellarchain"}
+BASE_COLUMNS = ["network", "address", "label", "source", "verification", "asset_code"]
+COLUMNS = BASE_COLUMNS + ["role"]
+SOURCES = {
+    "circle", "community", "issuer", "project", "stellar", "stellar-expert",
+    "stellar-ledger", "stellar-registry", "stellarchain",
+}
 VERIFICATION = {"unverified", "first_party", "sep1_domain", "stellarchain_verified"}
 MAX_ASSETS = 20_000
 MAX_ASSET_BYTES = 25 * 1024 * 1024
@@ -60,14 +64,16 @@ def collect(source):
     with source.open(encoding="utf-8-sig", newline="") as contents:
         reader = csv.reader(contents, strict=True)
         try:
-            if next(reader, None) != COLUMNS:
+            header = next(reader, None)
+            if header not in (BASE_COLUMNS, COLUMNS):
                 raise ValueError(f"expected header {','.join(COLUMNS)}")
             for row in reader:
                 if not row:
                     continue
-                if len(row) != len(COLUMNS):
-                    raise ValueError(f"expected {len(COLUMNS)} columns")
-                network, address, label, origin, verification, asset_code = row
+                if len(row) != len(header):
+                    raise ValueError(f"expected {len(header)} columns")
+                network, address, label, origin, verification, asset_code, *roles = row
+                role = roles[0] if roles else ""
                 if network not in NETWORKS:
                     raise ValueError("expected mainnet, testnet, or futurenet")
                 if origin not in SOURCES:
@@ -77,6 +83,12 @@ def collect(source):
                 if not label and verification != "unverified":
                     raise ValueError("verification requires a label")
                 record = make_record(network, address, asset_code)
+                if role:
+                    if role != "validator":
+                        raise ValueError("expected validator or an empty role")
+                    if record["type"] != "account":
+                        raise ValueError("validator role requires a classic public key")
+                    record["role"] = role
                 if verification == "sep1_domain" and record["type"] != "account" and not record.get("issuer"):
                     raise ValueError("SEP-1 domain verification requires an account or asset issuer")
                 if verification == "stellarchain_verified" and (

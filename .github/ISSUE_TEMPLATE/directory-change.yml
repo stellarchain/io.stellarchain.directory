@@ -15,7 +15,7 @@ body:
     id: identifier
     attributes:
       label: Public Stellar identifier
-      description: Enter a full uppercase address, an asset code and issuer, or native XLM.
+      description: Enter a full uppercase address or validator key, an asset code and issuer, or native XLM.
     validations:
       required: true
   - type: textarea
