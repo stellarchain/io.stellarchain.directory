@@ -12,7 +12,7 @@ A community-maintained directory of Stellar accounts, contracts, and assets. One
 
 | GET or HEAD | Result |
 | --- | --- |
-| [`/manifest.json`](https://directory.stellarchain.io/manifest.json) | Available networks, endpoints, counts, and download checksums |
+| [`/manifest.json`](https://directory.stellarchain.io/manifest.json) | Source commit, available networks, endpoints, counts, and download checksums |
 | [`/schema.json`](https://directory.stellarchain.io/schema.json) | JSON Schema for the manifest, records, and bulk downloads |
 | [`/mainnet/directory.json`](https://directory.stellarchain.io/mainnet/directory.json) | All mainnet address records |
 | `/mainnet/addresses/{address}.json` | Look up one uppercase address. [Example lookup for the Burn Account](https://directory.stellarchain.io/mainnet/addresses/GALAXYVOIDAOPZTDLHILAJQKCVVFMD4IKLXLSZV5YHO7VY74IWZILUTO.json) |

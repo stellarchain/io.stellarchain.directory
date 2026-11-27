@@ -1,6 +1,7 @@
 import csv
 import hashlib
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -9,6 +10,7 @@ from binascii import crc_hqx
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+import build as directory_build
 from build import build, collect
 from review_csv import has_source, summarize
 from strkey import address_type
@@ -61,6 +63,7 @@ class DirectoryTest(unittest.TestCase):
         lookup = json.loads((dist / f"mainnet/addresses/{ACCOUNT}.json").read_bytes())
         mainnet = manifest["networks"]["mainnet"]
         self.assertEqual(manifest["schema"], "/schema.json")
+        self.assertNotIn("commit", manifest)
         schema = json.loads((dist / "schema.json").read_bytes())
         self.assertEqual(schema["$id"], "https://directory.stellarchain.io/schema.json")
         self.assertTrue({"manifest", "address", "asset", "addresses", "assets"} <= set(schema["$defs"]))
@@ -80,6 +83,27 @@ class DirectoryTest(unittest.TestCase):
         self.put([("testnet", ACCOUNT, "Testnet label", "community", "sep1_domain", "")])
         build(source, dist)
         self.assertFalse((dist / "mainnet").exists())
+
+    def test_release_manifest_identifies_the_clean_checkout(self):
+        source = self.put([("mainnet", ACCOUNT, "Example", "community", "unverified", "")])
+        git = ["git", "-C", str(self.root)]
+        subprocess.run([*git, "init", "-q"], check=True)
+        subprocess.run([*git, "add", source.name], check=True)
+        subprocess.run(
+            [*git, "-c", "user.name=Directory Test", "-c", "user.email=test@example.org",
+             "-c", "commit.gpgsign=false", "commit", "-qm", "Directory fixture"],
+            check=True,
+        )
+
+        commit = directory_build.release_commit(self.root)
+        self.assertEqual(commit, subprocess.check_output([*git, "rev-parse", "HEAD"], text=True).strip())
+        dist = self.root / "dist"
+        build(source, dist, commit=commit)
+        self.assertEqual(json.loads((dist / "manifest.json").read_bytes())["commit"], commit)
+
+        source.write_text(source.read_text().replace("Example", "Edited"), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "clean Git checkout"):
+            directory_build.release_commit(self.root)
 
     def test_rejects_duplicate_addresses_and_nonpublic_fields(self):
         row = ("mainnet", ACCOUNT, "Example", "community", "unverified", "")

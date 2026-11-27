@@ -1,10 +1,12 @@
 """Validate directory.csv and generate the static JSON API."""
 
+import argparse
 import csv
 import hashlib
 import json
 import re
 import shutil
+import subprocess
 import sys
 import tempfile
 from collections import defaultdict
@@ -137,7 +139,23 @@ def write_collection(network_dir, folder, filename, id_field, entries):
     }
 
 
-def build(source, output_dir):
+def release_commit(root):
+    git = ["git", "-C", str(root)]
+    try:
+        commit = subprocess.check_output(
+            [*git, "rev-parse", "--verify", "HEAD"], text=True, stderr=subprocess.DEVNULL
+        ).strip()
+        changes = subprocess.check_output(
+            [*git, "status", "--porcelain", "--untracked-files=no"], text=True, stderr=subprocess.DEVNULL
+        )
+    except (OSError, subprocess.CalledProcessError) as error:
+        raise ValueError("release build requires a committed Git checkout") from error
+    if changes:
+        raise ValueError("release build requires a clean Git checkout")
+    return commit
+
+
+def build(source, output_dir, *, commit=None):
     records = collect(source)
     networks = defaultdict(lambda: {"addresses": [], "assets": []})
     for (network, folder, _), record in sorted(records.items()):
@@ -150,6 +168,8 @@ def build(source, output_dir):
     with tempfile.TemporaryDirectory(prefix=".directory-", dir=output_dir.parent) as temp_dir:
         staging = Path(temp_dir) / "dist"
         manifest = {"networks": {}, "schema": "/schema.json"}
+        if commit is not None:
+            manifest["commit"] = commit
         for network, groups in networks.items():
             network_dir = staging / network
             summary = write_collection(network_dir, "addresses", "directory.json", "address", groups["addresses"])
@@ -169,7 +189,11 @@ def build(source, output_dir):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--release", action="store_true", help="record the clean Git checkout's commit")
+    args = parser.parse_args()
     try:
-        build(ROOT / "directory.csv", ROOT / "dist")
+        commit = release_commit(ROOT) if args.release else None
+        build(ROOT / "directory.csv", ROOT / "dist", commit=commit)
     except (OSError, ValueError) as error:
         sys.exit(f"Directory build failed: {error}")
